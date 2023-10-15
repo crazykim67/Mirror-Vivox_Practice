@@ -18,6 +18,8 @@ public class Vivox
     public ILoginSession loginSession;
     public IChannelSession channelSession;
 
+    public IAudioDevices audioInputDevice;
+    public IAudioDevices audioOutputDevice;
 }
 
 public class VivoxManager : MonoBehaviour
@@ -39,7 +41,7 @@ public class VivoxManager : MonoBehaviour
             return instance;
         }
     }
-
+    
     public UIManager ui;
 
     private void Awake()
@@ -51,12 +53,8 @@ public class VivoxManager : MonoBehaviour
         vivox.client.Initialize();
 
         DontDestroyOnLoad(this.gameObject);
-    }
 
-    private void Start()
-    {
-        ui.InputChat("게임시작!!");
-        //Login("tester");
+        vivox.audioInputDevice.Muted = true;
     }
 
     public void Login(string userName)
@@ -105,9 +103,6 @@ public class VivoxManager : MonoBehaviour
         });
     }
 
-    
-
-
     private void OnApplicationQuit()
     {
         vivox.client.Uninitialize();
@@ -115,6 +110,7 @@ public class VivoxManager : MonoBehaviour
 
     #region 사용자 채팅 관련 콜백
 
+    // 채널 접속 콜백
     public void ChannelCallBack(bool bind, IChannelSession session)
     {
         if (bind)
@@ -127,6 +123,7 @@ public class VivoxManager : MonoBehaviour
         }
     }
 
+    // 메세지 보내기
     public void SendMessage(string str)
     {
         vivox.channelSession.BeginSendText(str, callback =>
@@ -143,6 +140,7 @@ public class VivoxManager : MonoBehaviour
         });
     }
 
+    // 메세지 받기
     public void ReciveMessage(object sender, QueueItemAddedEventArgs<IChannelTextMessage> queue)
     {
         var name = queue.Value.Sender.Name;
@@ -155,6 +153,7 @@ public class VivoxManager : MonoBehaviour
 
     #region 사용자 참여, 나가기 관련 콜백
 
+    // 사용자 참여, 나가기 콜백
     public void UserCallBacks(bool bind, IChannelSession session)
     {
         if (bind)
@@ -169,6 +168,7 @@ public class VivoxManager : MonoBehaviour
         }
     }
 
+    // 사용자 추가
     public void AddUser(object sender, KeyEventArg<string> userData)
     {
         var temp = (VivoxUnity.IReadOnlyDictionary<string, IParticipant>)sender;
@@ -178,6 +178,7 @@ public class VivoxManager : MonoBehaviour
         ui.InputUser($"{user.Account.Name}");
     }
 
+    // 사용자 나감
     public void LeaveUser(object sender, KeyEventArg<string> userData)
     {
         var temp = (VivoxUnity.IReadOnlyDictionary<string, IParticipant>)sender;
