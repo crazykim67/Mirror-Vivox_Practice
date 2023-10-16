@@ -51,10 +51,8 @@ public class VivoxManager : MonoBehaviour
         vivox.client = new Client();
         vivox.client.Uninitialize();
         vivox.client.Initialize();
-
+        SetAudioDevices();
         DontDestroyOnLoad(this.gameObject);
-
-        vivox.audioInputDevice.Muted = true;
     }
 
     public void Login(string userName)
@@ -87,7 +85,6 @@ public class VivoxManager : MonoBehaviour
 
         UserCallBacks(true, vivox.channelSession);
         ChannelCallBack(true, vivox.channelSession);
-
         vivox.channelSession.BeginConnect(true, true, true, vivox.channelSession.GetConnectToken(vivox.tokenKey, vivox.timespan), callback =>
         {
             try
@@ -185,6 +182,38 @@ public class VivoxManager : MonoBehaviour
 
         IParticipant user = temp[userData.Key];
         ui.InputChat($"{user.Account.Name} 님이 채널에 나갔습니다. ");
+    }
+
+    #endregion
+
+    #region 오디오 관련
+
+    public void SetAudioDevices(/*IAudioDevice targetInput = null, IAudioDevice targetOutput = null*/)
+    {
+        vivox.audioInputDevice = vivox.client.AudioInputDevices;
+        vivox.audioOutputDevice = vivox.client.AudioOutputDevices;
+
+        //if (targetInput != null && targetInput != vivox.client.AudioInputDevices.ActiveDevice)
+        //{
+        //    vivox.client.AudioInputDevices.BeginSetActiveDevice(targetInput, callback =>
+        //    {
+        //        if (callback.IsCompleted)
+        //        {
+        //            vivox.client.AudioInputDevices.EndSetActiveDevice(callback);
+        //        }
+        //    });
+        //}
+
+        //if (targetOutput != null && targetOutput != vivox.client.AudioOutputDevices.ActiveDevice)
+        //{
+        //    vivox.client.AudioOutputDevices.BeginSetActiveDevice(targetOutput, callback =>
+        //    {
+        //        if (callback.IsCompleted)
+        //        {
+        //            vivox.client.AudioOutputDevices.EndSetActiveDevice(callback);
+        //        }
+        //    });
+        //}
     }
 
     #endregion
