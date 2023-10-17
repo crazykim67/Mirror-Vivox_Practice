@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VivoxUnity;
+using UnityEngine.Android;
 
 [Serializable]
 public class Vivox
@@ -190,30 +191,23 @@ public class VivoxManager : MonoBehaviour
 
     public void SetAudioDevices(/*IAudioDevice targetInput = null, IAudioDevice targetOutput = null*/)
     {
+#if UNITY_ANDROID
+        if(!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.Microphone))
+            UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.Microphone);
+#endif
+
         vivox.audioInputDevice = vivox.client.AudioInputDevices;
         vivox.audioOutputDevice = vivox.client.AudioOutputDevices;
+        CheckAudioDevice();
+    }
 
-        //if (targetInput != null && targetInput != vivox.client.AudioInputDevices.ActiveDevice)
-        //{
-        //    vivox.client.AudioInputDevices.BeginSetActiveDevice(targetInput, callback =>
-        //    {
-        //        if (callback.IsCompleted)
-        //        {
-        //            vivox.client.AudioInputDevices.EndSetActiveDevice(callback);
-        //        }
-        //    });
-        //}
+    public void CheckAudioDevice()
+    {
+        var inTemp = vivox.audioInputDevice.ActiveDevice;
+        var outTemp = vivox.audioOutputDevice.ActiveDevice;
 
-        //if (targetOutput != null && targetOutput != vivox.client.AudioOutputDevices.ActiveDevice)
-        //{
-        //    vivox.client.AudioOutputDevices.BeginSetActiveDevice(targetOutput, callback =>
-        //    {
-        //        if (callback.IsCompleted)
-        //        {
-        //            vivox.client.AudioOutputDevices.EndSetActiveDevice(callback);
-        //        }
-        //    });
-        //}
+        Debug.Log($"Input Device : {inTemp.Name}");
+        Debug.Log($"Output Device : {outTemp.Name}");
     }
 
     #endregion
