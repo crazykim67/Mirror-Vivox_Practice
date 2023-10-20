@@ -28,7 +28,6 @@ public class UserData : MonoBehaviour
     {
         if (user == null || VivoxManager.Instance == null)
             return;
-        user.SetIsMuteForAll() = isMute;
         VivoxManager.Instance.MuteOtherUser(user, isMute);
     }
 }
