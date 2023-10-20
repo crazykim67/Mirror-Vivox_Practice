@@ -103,6 +103,12 @@ public class VivoxManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        if(vivox.channelSession != null)
+        {
+            vivox.channelSession.Disconnect();
+            vivox.loginSession.DeleteChannelSession(new ChannelId(vivox.issuer, ui.channelName.text, vivox.domain, ChannelType.NonPositional));
+        }
+
         vivox.client.Uninitialize();
     }
 
@@ -173,7 +179,7 @@ public class VivoxManager : MonoBehaviour
 
         IParticipant user = temp[userData.Key];
         ui.InputChat($"{user.Account.Name} 님이 채널에 접속했습니다. ");
-        ui.InputUser($"{user.Account.Name}");
+        ui.InputUser(user);
     }
 
     // 사용자 나감
@@ -183,15 +189,17 @@ public class VivoxManager : MonoBehaviour
 
         IParticipant user = temp[userData.Key];
         ui.InputChat($"{user.Account.Name} 님이 채널에 나갔습니다. ");
+        ui.LeaveUser(user);
     }
 
     #endregion
 
     #region 오디오 관련
 
+    // 오디오 장치 세팅
     public void SetAudioDevices(/*IAudioDevice targetInput = null, IAudioDevice targetOutput = null*/)
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IOS
         if(!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.Microphone))
             UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.Microphone);
 #endif
@@ -201,6 +209,7 @@ public class VivoxManager : MonoBehaviour
         CheckAudioDevice();
     }
 
+    // 오디오 장치 검사
     public void CheckAudioDevice()
     {
         var inTemp = vivox.audioInputDevice.ActiveDevice;
@@ -208,6 +217,22 @@ public class VivoxManager : MonoBehaviour
 
         Debug.Log($"Input Device : {inTemp.Name}");
         Debug.Log($"Output Device : {outTemp.Name}");
+    }
+
+    public void MuteOtherUser(IParticipant _user, bool isMute)
+    {
+        if (vivox.channelSession == null)
+            return;
+
+        // sip 세션 프로토콜
+        string constructedParticipantKey = "sip:." + vivox.issuer + "." + _user.Account.Name + ".@" + vivox.domain;
+        var participants = vivox.channelSession.Participants;
+
+        if (participants[constructedParticipantKey].InAudio)
+                participants[constructedParticipantKey].LocalMute = isMute;
+        else
+            // 상대방 오디오 장치 문제 발견
+            Debug.Log("Try Again");
     }
 
     #endregion

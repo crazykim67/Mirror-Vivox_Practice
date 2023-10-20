@@ -11,11 +11,13 @@ public class UIManager : MonoBehaviour
     public TMP_InputField channelName;
     public TMP_InputField message;
 
-    public GameObject userItem;
+    public UserData userItem;
     public Transform userPos;
 
     public GameObject chatItem;
     public Transform chatPos;
+
+    public List<UserData> userList = new List<UserData>();
 
     public void LoginBtn()
     {
@@ -48,15 +50,35 @@ public class UIManager : MonoBehaviour
         temp.GetComponent<TextMeshProUGUI>().text = str;
     }
 
-    public void InputUser(string str)
+    public void InputUser(IParticipant userData)
     {
         var temp = Instantiate(userItem, userPos);
-        temp.GetComponent<TextMeshProUGUI>().text = str;
+        temp.SetUserData(userData);
+
+        userList.Add(temp);
+    }
+
+    public void LeaveUser(IParticipant userData) 
+    { 
+        foreach(var user in userList)
+        {
+            if (user.user.Key.Equals(userData.Key))
+            {
+                Destroy(user.gameObject);
+                userList.Remove(user);
+                break;
+            }
+        }
     }
 
     public void MessageBtn()
     {
         VivoxManager.Instance.SendMessage(message.text);
         message.text = "";
+    }
+
+    public void AllMute()
+    {
+
     }
 }
