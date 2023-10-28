@@ -6,7 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/VivoxScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/MainMenu.unity
+    guid: 65ab1cc323afaf84cbebb26cffbb6323
+  - enabled: 1
+    path: Assets/Scenes/GameRoom.unity
+    guid: b52431f69e36f004eb9f8ec647843e72
+  - enabled: 1
+    path: Assets/Scenes/GamePlay.unity
+    guid: 28f0354f117a72b40b2878e2fb72e214
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

@@ -5,5 +5,5 @@ using Mirror;
 
 public class RoomManager : NetworkRoomManager
 {
-     
+    
 }
