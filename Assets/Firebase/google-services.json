@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "262464440175",
+    "project_id": "practice-vivox",
+    "storage_bucket": "practice-vivox.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262464440175:android:cd8581d6d036437f920a9a",
+        "android_client_info": {
+          "package_name": "com.company.practice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWNEQkWTh6RUjSGwjQ5-61IGYd_5NtLWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
