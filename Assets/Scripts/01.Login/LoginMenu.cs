@@ -83,7 +83,7 @@ public class LoginMenu : MonoBehaviour
             return;
         }
 
-        AuthManager.Instance.OnLogin($"{lg_idField.text}@{rg_dropdown.options[rg_dropdown.value].text}", lg_passField.text);
+        AuthManager.Instance.OnLogin(lg_idField.text, lg_dropdown.options[lg_dropdown.value].text, lg_passField.text);
     }
 
     // 회원가입 완료

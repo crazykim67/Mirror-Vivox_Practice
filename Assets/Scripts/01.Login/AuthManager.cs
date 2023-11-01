@@ -29,6 +29,8 @@ public class AuthManager : MonoBehaviour
 
     private Firebase.Auth.FirebaseAuth auth;
 
+    public string currentId;
+
     private void Awake()
     {
         if (instance == null)
@@ -42,13 +44,15 @@ public class AuthManager : MonoBehaviour
         auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
     }
 
-    public void OnLogin(string _id, string _pass)
+    public void OnLogin(string _id, string _email, string _pass)
     {
-        auth.SignInWithEmailAndPasswordAsync($"{_id}", _pass).ContinueWith(
+        auth.SignInWithEmailAndPasswordAsync($"{_id}@{_email}", _pass).ContinueWith(
             task => {
                 if (task.IsCompleted && !task.IsFaulted && !task.IsCanceled)
                 {
                     Debug.Log(_id + " 로 로그인 하셨습니다.");
+                    currentId = _id;
+                    VivoxWorldManager.Instance.Login(currentId);
                 }
                 else if(task.IsFaulted)
                 {

@@ -35,4 +35,37 @@ public class VivoxWorldManager : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
     }
+
+    public void Login(string userName)
+    {
+        AccountId accoundId = new AccountId(vivox.issuer, userName, vivox.domain);
+        vivox.loginSession = vivox.client.GetLoginSession(accoundId);
+
+        // 공식 문서에서 TryCatch 사용이 무난하다고 함.
+        vivox.loginSession.BeginLogin(vivox.server, vivox.loginSession.GetLoginToken(vivox.tokenKey, vivox.timespan),
+            callback =>
+            {
+                try
+                {
+                    vivox.loginSession.EndLogin(callback);
+                    Debug.Log("Login Successful");
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                    throw;
+                }
+            });
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (vivox.channelSession != null)
+        {
+            vivox.channelSession.Disconnect();
+            //vivox.loginSession.DeleteChannelSession(new ChannelId(vivox.issuer, ui.channelName.text, vivox.domain, ChannelType.NonPositional));
+        }
+
+        vivox.client.Uninitialize();
+    }
 }
